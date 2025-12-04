@@ -2,35 +2,49 @@ import time
 import os
 
 from config import get_config
-from utils import read_new_lines
+from format import read_new_lines
 from commande import handle_exec_request
 from file_transfer import check_new_files, list_user_files
 
+import re
 
 def process_exec_line(line, current_user, shared_file):
-    """
-    Analyse une ligne contenant @exec et lance handle_exec_request si c'est pour nous.
-    Format du log :
-    YYYY-MM-DD ... – sender : @exec destinataire commande
-    """
-    try:
-        meta, content = line.split(":", 1)
-        content = content.strip()
 
-        if not content.startswith("@exec"):
-            return
+    #regex pour extraire sender + content proprement
+    pattern = r"^\d{4}-\d{2}-\d{2} .* ?[–-] (.*?) : (.*)$"
+    match = re.match(pattern, line)
 
-        parts = content.split(maxsplit=2)
-        # parts = ["@exec", "<dest_user>", "<commande>"]
+    if not match:
+        print("[DEBUG] REGEX FAIL:", line)
+        return
 
-        sender = meta.split("–")[1].strip()
-        dest_user = parts[1]
-        command = parts[2]
+    sender = match.group(1).strip()
+    content = match.group(2).strip()
 
-        handle_exec_request(sender, dest_user, current_user, command, shared_file)
+    # On vérifie que c’est bien une commande exec
+    if not content.startswith("@exec"):
+        return
 
-    except Exception as e:
-        print(f"[ERREUR] Impossible de traiter la commande exec : {e}")
+    # Extraction @exec <dest> <commande>
+    parts = content.split(maxsplit=2)
+    if len(parts) < 3:
+        print("[DEBUG] BAD EXEC FORMAT:", content)
+        return
+
+    dest_user = parts[1].strip()
+    command = parts[2].strip()
+
+    print("[DEBUG] SENDER:", sender)
+    print("[DEBUG] DEST_USER:", dest_user)
+    print("[DEBUG] CURRENT_USER:", current_user)
+    print("[DEBUG] COMMAND:", command)
+
+    # Sécurité : ce n’est pas pour nous
+    if dest_user != current_user:
+        return
+
+    # On lance la demande
+    handle_exec_request(sender, dest_user, current_user, command, shared_file)
 
 
 # ---------------------- Programme principal ----------------------
@@ -38,7 +52,7 @@ def process_exec_line(line, current_user, shared_file):
 cfg = get_config()
 shared_file = cfg["shared_file"]
 downloads_dir = cfg["downloads_dir"]
-poll_interval = float(cfg["poll_interval"])
+interval = float(cfg["interval"])
 
 # Nom de l'utilisateur
 current_user = input("Entrez votre nom d'utilisateur : ").strip()
@@ -62,8 +76,9 @@ while True:
     for line in lines:
         line = line.rstrip()
         print(line)
-
+        
         if "@exec" in line:
+            print("[DEBUG] @exec CALLED")
             process_exec_line(line, current_user, shared_file)
 
     # Vérifier les nouveaux fichiers
@@ -71,4 +86,4 @@ while True:
     for fname in new_files:
         print(f"[INFO] Nouveau fichier reçu : {fname}")
 
-    time.sleep(poll_interval)
+    time.sleep(interval)

@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 
-def now_timestamp():
+def format_time():
     """
     Retourne la date/heure actuelle au format :
     YYYY-MM-DD HH:MM:SS.milliseconds
@@ -12,9 +12,9 @@ def format_msg(username, text):
     """
     Formate un message selon le format imposé dans le projet.
     """
-    return f"{now_timestamp()} – {username} : {text}\n"
+    return f"{format_time()} - {username} : {text}\n"
 
-def ensure_dir(path):
+def make_dir(path):
     """
     Crée un dossier s'il n'existe pas déjà.
     """

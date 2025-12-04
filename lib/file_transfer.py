@@ -1,5 +1,5 @@
 import os
-from utils import ensure_dir
+from format import make_dir
 
 CHUNK_SIZE = 8192  # 8 KB
 
@@ -14,7 +14,7 @@ def send_file(src_path, dest_user, downloads_dir):
     filename = os.path.basename(src_path)
     user_dir = os.path.join(downloads_dir, dest_user)
 
-    ensure_dir(user_dir)
+    make_dir(user_dir)
 
     dest_path = os.path.join(user_dir, filename)
 

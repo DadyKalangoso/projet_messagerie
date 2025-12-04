@@ -1,5 +1,5 @@
 from config import get_config
-from utils import format_msg
+from format import format_msg
 from file_transfer import send_file
 
 # Charger la configuration
@@ -60,6 +60,7 @@ while True:
             f.write(format_msg(username, f"@exec {dest_user} {command}"))
 
         print(f"[OK] Demande d'exécution envoyée à {dest_user}")
+
 
     # Message normal
     else:
