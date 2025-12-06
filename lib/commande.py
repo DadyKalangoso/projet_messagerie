@@ -1,3 +1,4 @@
+# KALANGOSO KANGELA - RAYANE BADKOUF
 import subprocess
 from format import format_msg
 import time
@@ -25,7 +26,7 @@ def execute_command(command):
         return False
 
 
-def handle_exec_request(sender, dest_user, current_user, command, shared_file):
+def exec_request(sender, dest_user, current_user, command, shared_file):
     """
     Gère une demande @exec envoyée dans le chat.
     """

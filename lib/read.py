@@ -1,18 +1,20 @@
+# KALANGOSO KANGELA - RAYANE BADKOUF
+
 import time
 import os
 
 from config import get_config
 from format import read_new_lines
-from commande import handle_exec_request
+from commande import exec_request
 from file_transfer import check_new_files, list_user_files
 
 import re
 
-def process_exec_line(line, current_user, shared_file):
+def exec_line(line, current_user, shared_file):
 
     #regex pour extraire sender + content proprement
-    pattern = r"^\d{4}-\d{2}-\d{2} .* ?[–-] (.*?) : (.*)$"
-    match = re.match(pattern, line)
+    r_exp = r"^\d{4}-\d{2}-\d{2} .* ?[–-] (.*?) : (.*)$"
+    match = re.match(r_exp, line)
 
     if not match:
         print("[DEBUG] REGEX FAIL:", line)
@@ -44,15 +46,14 @@ def process_exec_line(line, current_user, shared_file):
         return
 
     # On lance la demande
-    handle_exec_request(sender, dest_user, current_user, command, shared_file)
-
+    exec_request(sender, dest_user, current_user, command, shared_file)
 
 # ---------------------- Programme principal ----------------------
 
-cfg = get_config()
-shared_file = cfg["shared_file"]
-downloads_dir = cfg["downloads_dir"]
-interval = float(cfg["interval"])
+config = get_config()
+shared_file = config["shared_file"]
+downloads_dir = config["downloads_dir"]
+interval = float(config["interval"])
 
 # Nom de l'utilisateur
 current_user = input("Entrez votre nom d'utilisateur : ").strip()
@@ -79,7 +80,7 @@ while True:
         
         if "@exec" in line:
             print("[DEBUG] @exec CALLED")
-            process_exec_line(line, current_user, shared_file)
+            exec_line(line, current_user, shared_file)
 
     # Vérifier les nouveaux fichiers
     new_files, known_files = check_new_files(current_user, downloads_dir, known_files)

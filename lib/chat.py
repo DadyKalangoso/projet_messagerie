@@ -1,11 +1,12 @@
+# KALANGOSO KANGELA - RAYANE BADKOUF
 from config import get_config
 from format import format_msg
 from file_transfer import send_file
 
 # Charger la configuration
-cfg = get_config()
-shared_file = cfg["shared_file"]
-downloads_dir = cfg["downloads_dir"]
+config = get_config()
+shared_file = config["shared_file"]
+downloads_dir = config["downloads_dir"]
 
 # Demander le nom d'utilisateur
 username = input("Entrez votre nom d'utilisateur : ").strip()

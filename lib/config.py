@@ -1,3 +1,4 @@
+# KALANGOSO KANGELA - RAYANE BADKOUF
 import json
 import os
 
@@ -24,7 +25,7 @@ def get_config():
     en ajoutant des valeurs par défaut si certaines clés manquent.
     Retourne toujours un dictionnaire propre.
     """
-    cfg = read_config()
+    config = read_config()
 
     # valeurs par défaut
     defaults = {
@@ -35,7 +36,7 @@ def get_config():
 
     # appliquer les valeurs par défaut si absentes
     for key, value in defaults.items():
-        if key not in cfg:
-            cfg[key] = value
+        if key not in config:
+            config[key] = value
 
-    return cfg
+    return config

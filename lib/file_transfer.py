@@ -1,7 +1,8 @@
+# KALANGOSO KANGELA - RAYANE BADKOUF
 import os
 from format import make_dir
 
-CHUNK_SIZE = 8192  # 8 KB
+BIT = 8192  # 8 KB
 
 def send_file(src_path, dest_user, downloads_dir):
     """
@@ -21,10 +22,10 @@ def send_file(src_path, dest_user, downloads_dir):
     # Copier à la main en binaire
     with open(src_path, 'rb') as src, open(dest_path, 'wb') as dst:
         while True:
-            chunk = src.read(CHUNK_SIZE)
-            if not chunk:
+            bit = src.read(BIT)
+            if not bit:
                 break
-            dst.write(chunk)
+            dst.write(bit)
             dst.flush()
 
     return filename, dest_path
